@@ -28,7 +28,7 @@ int rk_video_init(struct rk_video_instance *inst, const char *title, int width,
 
 /**
  * rk_video_ctx_clear - Clear window context
- * @inst: Instance poiner
+ * @inst: Instance pointer
  *
  * This function clear window context by current active color
 */
@@ -45,15 +45,15 @@ void rk_video_ctx_swap(struct rk_video_instance *inst);
 /**
  * rk_video_ctx_use_color - Change draw color
  * @inst: Instance pointer
- * @r: Red ratio in color
- * @g: Green ratio in color
- * @b: Blue ratio in color
- * @a: Alpha number
+ * @r: Red component in color
+ * @g: Green component in color
+ * @b: Blue component in color
+ * @a: Alpha component
  * 
  * This function set color for draw
  * 
  * Important!
- * Color sets in normalized type (-1.0f - 1.0f)
+ * Color sets in normalized type (0.0f - 1.0f)
 */
 void rk_video_ctx_use_color(struct rk_video_instance *inst, float r, float g,
 			    float b, float a);
