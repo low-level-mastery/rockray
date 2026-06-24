@@ -30,38 +30,41 @@ int rk_engine_init(struct rk_engine_instance *engine)
 	engine->video = rk_video_alloc();
 	if (!engine->video) {
 		ret = -1;
+		pr_err("Video module allocates: Failed");
 		goto failure;
 	}
+	
+	pr_info("Video module allocates: Success");
 
 	if (rk_video_init(engine->video, "RockRay", 900, 600) < 0) {
 		ret = -2;
+		pr_err("Video module initialize: Failed");
 		goto failure;
 	}
+
+	pr_info("Video module initialize: Success");
 
 	engine->input = rk_input_alloc();
 	if (!engine->input) {
 		ret = -3;
+		pr_err("Input module allocates: Failed");
 		goto failure;
 	}
+
+	pr_info("Input module allocates: Sucess");
 	
 	engine->is_running = true;
 
 	return true;
 
 failure:
-	if (engine->input) {
-		rk_input_free(engine->input);
-	}
-
-	if (engine->video) {
-		rk_video_free(engine->video);
-	}
-
+	/* main.c call rk_engine_free() */
 	return ret;
 }
 
 void rk_engine_run(struct rk_engine_instance *engine)
 {
+	pr_info("Starting mainloop...");
 	while (engine->is_running) {
 		/* Handle event's part */
 		rk_input_handle(engine->input);
@@ -87,8 +90,23 @@ void rk_engine_free(struct rk_engine_instance *engine)
 		return;
 	}
 	
-	rk_input_free(engine->input);
-	rk_video_free(engine->video);
+	if (engine->input) {
+		rk_input_free(engine->input);
+		engine->input = NULL;
+		
+		pr_info("Input module free: Success");
+	}
+
+
+
+	if (engine->video) {
+		rk_video_free(engine->video);
+		engine->video = NULL;
+
+		pr_info("Video module free: Success");
+	}
 
 	free(engine);
+
+	pr_info("All memory is free");
 }

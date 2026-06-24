@@ -12,7 +12,7 @@ struct rk_video_instance {
 
 struct rk_video_instance *rk_video_alloc(void)
 {
-	struct rk_video_instance *instance = malloc(sizeof(*instance));
+	struct rk_video_instance *instance = calloc(1, sizeof(*instance));
 	if (!instance) {
 		return NULL;
 	}

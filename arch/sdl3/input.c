@@ -10,7 +10,7 @@ struct rk_input_instance {
 
 struct rk_input_instance *rk_input_alloc(void)
 {
-	struct rk_input_instance *instance = malloc(sizeof(*instance));
+	struct rk_input_instance *instance = calloc(1, sizeof(*instance));
 	if (!instance) {
 		return NULL;
 	}
