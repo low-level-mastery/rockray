@@ -24,14 +24,7 @@ struct rk_input_instance *rk_input_alloc(void);
  * 
  * This function free allocated memory from heap
 */
-void rk_input_free(struct rk_input_instance *inst)
-{
-	if (!inst) {
-		return;
-	}
-
-	free(inst);
-}
+void rk_input_free(struct rk_input_instance *inst);
 
 /**
  * rk_input_handle - Update event list
