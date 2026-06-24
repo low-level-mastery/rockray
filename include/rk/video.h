@@ -1,8 +1,6 @@
 #ifndef RK_VIDEO_H
 #define RK_VIDEO_H
 
-#include <SDL3/SDL.h>
-
 struct rk_video_instance;
 
 /**

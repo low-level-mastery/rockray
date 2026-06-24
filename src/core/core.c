@@ -2,6 +2,7 @@
 #include "rk/logger.h"
 
 #include <stdlib.h>
+#include <stdbool.h>
 
 struct rk_engine_instance {
 	
@@ -20,7 +21,7 @@ struct rk_engine_instance *rk_engine_alloc(void)
 
 int rk_engine_init(struct rk_engine_instance *engine)
 {
-	return 1;
+	return true;
 }
 
 void rk_engine_run(struct rk_engine_instance *engine)
@@ -30,5 +31,9 @@ void rk_engine_run(struct rk_engine_instance *engine)
 
 void rk_engine_free(struct rk_engine_instance *engine)
 {
-
+	if (!engine) {
+		return;
+	}
+	
+	free(engine);
 }
