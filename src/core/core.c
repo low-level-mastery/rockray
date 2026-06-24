@@ -9,7 +9,13 @@
 struct rk_engine_instance {
 	struct rk_video_instance *video;
 	struct rk_input_instance *input;
-	
+
+	float camera_x;
+	float camera_y;
+
+	int window_width;
+	int window_height;
+
 	bool is_running;
 };
 
@@ -36,7 +42,11 @@ int rk_engine_init(struct rk_engine_instance *engine)
 	
 	pr_info("Video module allocates: Success");
 
-	if (rk_video_init(engine->video, "RockRay", 900, 600) < 0) {
+	engine->window_width = 900;
+	engine->window_height = 600;
+
+	if (rk_video_init(engine->video, "RockRay", engine->window_width,
+			  engine->window_height) < 0) {
 		ret = -2;
 		pr_err("Video module initialize: Failed");
 		goto failure;
@@ -52,7 +62,10 @@ int rk_engine_init(struct rk_engine_instance *engine)
 	}
 
 	pr_info("Input module allocates: Sucess");
-	
+
+	engine->camera_x = engine->window_width / 2;
+	engine->camera_y = engine->window_height / 2;
+
 	engine->is_running = true;
 
 	return true;
@@ -69,7 +82,8 @@ void rk_engine_run(struct rk_engine_instance *engine)
 		/* Handle event's part */
 		rk_input_handle(engine->input);
 		
-		if (rk_input_is_key_pressed(engine->input, SDL_SCANCODE_ESCAPE)) {
+		if (rk_input_is_key_pressed(engine->input,
+					    SDL_SCANCODE_ESCAPE)) {
 			engine->is_running = false;
 		}
 
@@ -78,7 +92,8 @@ void rk_engine_run(struct rk_engine_instance *engine)
 		rk_video_ctx_clear(engine->video);
 		
 		rk_video_ctx_use_color(engine->video, 1.0f, 0.0f, 0.0f, 1.0f);
-		rk_video_ctx_add_line(engine->video, 0.0f, 0.0f, 500.0f, 500.0f);
+		rk_video_ctx_add_line(engine->video, 0.0f, 0.0f, 500.0f,
+				      500.0f);
 		
 		rk_video_ctx_swap(engine->video);
 	}
