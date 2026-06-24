@@ -34,8 +34,18 @@ make
 
 ---
 
-`Windows`
-IDK
+`Windows` (powershell!)
+```
+winget upgrade --all
+winget install Git.Git Make.Make LLVM.LLVM
+winget install libsdl.libsdl3
+winget install Git.Git Make.Make LLVM.LLVM libsdl.libsdl3
+
+git clone https://github.com/low-level-mastery/rockray.git
+cd rockray
+
+make
+./raycaster
 ```
 
 ### License
