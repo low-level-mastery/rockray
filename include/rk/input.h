@@ -19,6 +19,21 @@ enum rk_input_mouse_button {
 struct rk_input_instance *rk_input_alloc(void);
 
 /**
+ * rk_input_free - Free allocated memory
+ * @inst: Instance for cleanup
+ * 
+ * This function free allocated memory from heap
+*/
+void rk_input_free(struct rk_input_instance *inst)
+{
+	if (!inst) {
+		return;
+	}
+
+	free(inst);
+}
+
+/**
  * rk_input_handle - Update event list
  * @inst: Instance pointer
  * 
