@@ -2,6 +2,7 @@
 #define RK_INPUT_H
 
 #include <stdbool.h>
+#include <SDL3/SDL.h>
 
 struct rk_input_instance;
 
@@ -31,10 +32,7 @@ void rk_input_free(struct rk_input_instance *inst);
  * @inst: Instance pointer
  * 
  * This function conducts a survey of states
- * and save it to rk_input_instance.keyboard_state
- *
- * Also this function get cursor pos and save it
- * to rk_input_instance.cursor.x/y
+ * and save it to @inst->keys_state
 */
 void rk_input_handle(struct rk_input_instance *inst);
 
@@ -44,7 +42,7 @@ void rk_input_handle(struct rk_input_instance *inst);
  * 
  * This function returns mouse position from @inst
 */
-float *rk_input_get_mouse(struct rk_input_instance *inst);
+void rk_input_get_mouse(float *x, float *y);
 
 /**
  * rk_input_is_mouse_pressed - Check mouse button state
@@ -54,8 +52,7 @@ float *rk_input_get_mouse(struct rk_input_instance *inst);
  * This function check mouse button state
  * Return true if @btn side is pressed, else false
 */
-bool rk_input_is_mouse_pressed(struct rk_input_instance *inst,
-			       enum rk_input_mouse_button btn);
+bool rk_input_is_mouse_pressed(enum rk_input_mouse_button btn);
 
 /**
  * rk_input_is_key_pressed - Check is key pressed
@@ -64,7 +61,9 @@ bool rk_input_is_mouse_pressed(struct rk_input_instance *inst,
  * 
  * This function check key state
  * Returns key state, true - pressed, else false
+ * 
+ * TODO: FIX SDL_Scancode to enum rk_keycode!
 */
-bool rk_input_is_key_pressed(struct rk_input_instance *inst, char key);
+bool rk_input_is_key_pressed(struct rk_input_instance *inst, SDL_Scancode key);
 
 #endif /* RK_INPUT_H */

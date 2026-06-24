@@ -20,7 +20,7 @@ struct rk_engine_instance *rk_engine_alloc(void);
  * 
  * Return 0 if success or negative error code if fail.
 */
-int    rk_engine_init(struct rk_engine_instance *engine);
+int rk_engine_init(struct rk_engine_instance *engine);
 
 /**
  * rk_engine_run - Start engine mainloop
@@ -28,7 +28,7 @@ int    rk_engine_init(struct rk_engine_instance *engine);
  * 
  * This function start engine mainloop.
 */
-void   rk_engine_run(struct rk_engine_instance *engine);
+void rk_engine_run(struct rk_engine_instance *engine);
 
 /**
  * rk_engine_free - Free all resources
@@ -37,6 +37,6 @@ void   rk_engine_run(struct rk_engine_instance *engine);
  * This function destroy all submodules and free
  * used memory and descriptors.
 */
-void   rk_engine_free(struct rk_engine_instance *engine);
+void rk_engine_free(struct rk_engine_instance *engine);
 
 #endif /* RK_CORE_H */
