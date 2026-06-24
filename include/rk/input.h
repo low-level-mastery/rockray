@@ -11,6 +11,14 @@ enum rk_input_mouse_button {
 };
 
 /**
+ * rk_input_alloc - Allocates memory for instance
+ *
+ * This function allocates memory for instance
+ * Returns allocates memory
+*/
+struct rk_input_instance *rk_input_alloc(void);
+
+/**
  * rk_input_handle - Update event list
  * @inst: Instance pointer
  * 
