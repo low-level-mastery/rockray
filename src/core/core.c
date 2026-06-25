@@ -6,6 +6,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+/* TODO: Workaround*/
+#define CAMERA_SIZE 50
+#define CAMERA_SPEED 0.4f
+
 struct rk_engine_instance {
 	struct rk_video_instance *video;
 	struct rk_input_instance *input;
@@ -63,8 +67,8 @@ int rk_engine_init(struct rk_engine_instance *engine)
 
 	pr_info("Input module allocates: Sucess");
 
-	engine->camera_x = engine->window_width / 2;
-	engine->camera_y = engine->window_height / 2;
+	engine->camera_x = engine->window_width / 2 - CAMERA_SIZE / 2;
+	engine->camera_y = engine->window_height / 2 - CAMERA_SIZE / 2;
 
 	engine->is_running = true;
 
@@ -87,12 +91,32 @@ void rk_engine_run(struct rk_engine_instance *engine)
 			engine->is_running = false;
 		}
 
+		/* Camera movement */
+		if (rk_input_is_key_pressed(engine->input, SDL_SCANCODE_H)) {
+			engine->camera_x -= CAMERA_SPEED;
+		}
+
+		if (rk_input_is_key_pressed(engine->input, SDL_SCANCODE_L)) {
+			engine->camera_x += CAMERA_SPEED;
+		}
+
+		if (rk_input_is_key_pressed(engine->input, SDL_SCANCODE_J)) {
+			engine->camera_y += CAMERA_SPEED;
+		}
+
+		if (rk_input_is_key_pressed(engine->input, SDL_SCANCODE_K)) {
+			engine->camera_y -= CAMERA_SPEED;
+		}
+
 		/* Render part */
 		rk_video_ctx_use_color(engine->video, 1.0f, 1.0f, 1.0f, 1.0f);
 		rk_video_ctx_clear(engine->video);
 		
+		/* 2D Map */
 		rk_video_ctx_use_color(engine->video, 1.0f, 0.0f, 0.0f, 1.0f);
-		rk_video_ctx_rectangle(engine->video, 100.0f, 100.0f, 50.0f, 50.0f);
+		rk_video_ctx_rectangle(engine->video, engine->camera_x,
+				       engine->camera_y, CAMERA_SIZE,
+				       CAMERA_SIZE);
 		
 		rk_video_ctx_swap(engine->video);
 	}
