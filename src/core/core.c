@@ -92,8 +92,7 @@ void rk_engine_run(struct rk_engine_instance *engine)
 		rk_video_ctx_clear(engine->video);
 		
 		rk_video_ctx_use_color(engine->video, 1.0f, 0.0f, 0.0f, 1.0f);
-		rk_video_ctx_add_line(engine->video, 0.0f, 0.0f, 500.0f,
-				      500.0f);
+		rk_video_ctx_rectangle(engine->video, 100.0f, 100.0f, 50.0f, 50.0f);
 		
 		rk_video_ctx_swap(engine->video);
 	}

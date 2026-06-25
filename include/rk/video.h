@@ -57,18 +57,18 @@ void rk_video_ctx_use_color(struct rk_video_instance *inst, float r, float g,
 			    float b, float a);
 
 /**
- * rk_video_ctx_add_line - Add line to context buffer
+ * rk_video_ctx_rectangle - Render rectangle
  * @inst: Instance pointer
- * @start_x: Line start x coord
- * @start_y: Line start y coord
- * @end_x: Line end x coord
- * @end_y: Line end y coord
- * 
- * This function add line to context buffer. For see changes
- * use rk_video_ctx_swap function
+ * @x: X position
+ * @y: Y position
+ * @w: Width
+ * @h: Height
+ *
+ * This function render filled rectangle in @x/@y position
+ * and width/height from @w/@h
 */
-void rk_video_ctx_add_line(struct rk_video_instance *inst, float start_x,
-			   float start_y, float end_x, float end_y);
+void rk_video_ctx_rectangle(struct rk_video_instance *inst, float x, float y,
+			    float w, float h);
 
 /**
  * rk_video_free - Free all module resources

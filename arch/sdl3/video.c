@@ -72,10 +72,11 @@ void rk_video_ctx_use_color(struct rk_video_instance *inst, float r, float g,
 	SDL_SetRenderDrawColorFloat(inst->native_renderer, r, g, b, a);
 }
 
-void rk_video_ctx_add_line(struct rk_video_instance *inst, float start_x,
-			   float start_y, float end_x, float end_y)
+void rk_video_ctx_rectangle(struct rk_video_instance *inst, float x, float y,
+			    float w, float h)
 {
-	SDL_RenderLine(inst->native_renderer, start_x, start_y, end_x, end_y);
+	SDL_FRect r = {x, y, w, h};
+	SDL_RenderFillRect(inst->native_renderer, &r);
 }
 
 void rk_video_free(struct rk_video_instance *inst)
