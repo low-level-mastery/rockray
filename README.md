@@ -1,5 +1,8 @@
 # RockRay
 
+### What is this
+Rockray is a raycaster engine for pseudo 3d graaphics.
+
 ### Build && Run
 To build and run this project, make it:
 1. Install requirements
