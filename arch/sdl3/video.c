@@ -79,6 +79,12 @@ void rk_video_ctx_rectangle(struct rk_video_instance *inst, float x, float y,
 	SDL_RenderFillRect(inst->native_renderer, &r);
 }
 
+void rk_video_ctx_line(struct rk_video_instance *inst, float x, float y,
+		       float ex, float ey)
+{
+	SDL_RenderLine(inst->native_renderer, x, y, ex, ey);
+}
+
 void rk_video_free(struct rk_video_instance *inst)
 {
 	if (!inst) {

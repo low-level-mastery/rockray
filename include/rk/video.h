@@ -69,6 +69,18 @@ void rk_video_ctx_use_color(struct rk_video_instance *inst, float r, float g,
 */
 void rk_video_ctx_rectangle(struct rk_video_instance *inst, float x, float y,
 			    float w, float h);
+/**
+ * rk_video_ctx_line - Render line
+ * @inst: Instance pointer
+ * @x: Start x
+ * @y: Start y
+ * @ex: End x
+ * @ey: End y
+ *
+ * This function render line
+*/
+void rk_video_ctx_line(struct rk_video_instance *inst, float x, float y,
+		       float ex, float ey);
 
 /**
  * rk_video_free - Free all module resources

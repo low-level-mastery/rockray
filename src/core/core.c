@@ -5,10 +5,12 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
+#include <math.h>
 
 /* TODO: Workaround*/
 #define CAMERA_SIZE 50
 #define CAMERA_SPEED 0.4f
+#define PI 3.14159265358979
 
 struct rk_engine_instance {
 	struct rk_video_instance *video;
@@ -16,6 +18,9 @@ struct rk_engine_instance {
 
 	float camera_x;
 	float camera_y;
+	float camera_a;
+	float camera_view_len;
+	float camera_fovy;
 
 	int window_width;
 	int window_height;
@@ -69,7 +74,9 @@ int rk_engine_init(struct rk_engine_instance *engine)
 
 	engine->camera_x = engine->window_width / 2 - CAMERA_SIZE / 2;
 	engine->camera_y = engine->window_height / 2 - CAMERA_SIZE / 2;
-
+	engine->camera_a = 0.0f;
+	engine->camera_view_len = 300.0f;
+	engine->camera_fovy = PI / 3;
 	engine->is_running = true;
 
 	return true;
@@ -117,7 +124,17 @@ void rk_engine_run(struct rk_engine_instance *engine)
 		rk_video_ctx_rectangle(engine->video, engine->camera_x,
 				       engine->camera_y, CAMERA_SIZE,
 				       CAMERA_SIZE);
-		
+	
+		float end_x = engine->camera_view_len * cosf(engine->camera_a)
+			      + engine->camera_x;
+		float end_y = engine->camera_view_len * sinf(engine->camera_a)
+			      + engine->camera_y;
+
+		rk_video_ctx_use_color(engine->video, 0.8f, 0.8f, 0.4f, 1.0f);
+		rk_video_ctx_line(engine->video, engine->camera_x + CAMERA_SIZE / 2,
+				  engine->camera_y + CAMERA_SIZE / 2, end_x +
+				  CAMERA_SIZE / 2, end_y + CAMERA_SIZE / 2);
+	
 		rk_video_ctx_swap(engine->video);
 	}
 }

@@ -3,7 +3,7 @@
 
 CC          := gcc
 CFLAGS      := -Wall -Wextra -O2 -std=c11 -Iinclude
-LIBS        := `pkg-config --libs sdl3`
+LIBS        := `pkg-config --libs sdl3` -lm
 TARGET      := raycaster
 BUILD_DIR   := build
 
