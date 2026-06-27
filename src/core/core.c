@@ -1,20 +1,24 @@
+#include "rk/map.h"
+#include "rk/video.h"
 #include "rk/input.h"
 #include "rk/video.h"
 #include "rk/logger.h"
 #include "rk/camera.h"
 
 #include <stdlib.h>
-#include <stdbool.h>
 #include <math.h>
+#include <stdbool.h>
+#include <string.h>
 
 /* TODO: Workaround */
 #define CAMERA_SIZE 20
 
 struct rk_engine_instance {
+	struct rk_map map;
 	struct rk_video_instance *video;
 	struct rk_input_instance *input;
 	struct rk_camera *camera;
-
+	
 	int window_width;
 	int window_height;
 
@@ -81,9 +85,40 @@ int rk_engine_init(struct rk_engine_instance *engine)
 	
 	pr_info("Camera is setup");
 	
+	engine->map.field_size = 20.0f;
+	engine->map.width = (int)(engine->window_width / engine->map.field_size);
+	engine->map.height = (int)(engine->window_height / engine->map.field_size);
+
+	size_t total_cells = engine->map.width * engine->map.height;
+	
+	engine->map.text_map = malloc(engine->map.width * engine->map.height /
+				     (engine->map.field_size * engine->map.field_size));
+
+	pr_info("Map initialize: %d x %d cells. Success", engine->map.width, engine->map.height);
+
+	engine->map.text_map = calloc(total_cells, sizeof(char));
+
+	if (!engine->map.text_map) {
+		ret = -5;
+		pr_err("Map allocates: Failed");
+		goto failure;
+	}
+	
+	for (int y = 0; y < engine->map.height; ++y) {
+                for (int x = 0; x < engine->map.width; ++x) {
+                        if (y == 0 || y == engine->map.height - 1 || 
+                            x == 0 || x == engine->map.width - 1) {
+                                int index = engine->map.width * y + x;
+                                engine->map.text_map[index] = '#';
+                        }
+                }
+        }
+
+	pr_info("Map allocates: Success");
+	
 	engine->is_running = true;
 
-	return true;
+	return 0;
 
 failure:
 	/* main.c call rk_engine_free() */
@@ -145,7 +180,10 @@ void rk_engine_run(struct rk_engine_instance *engine)
 		/* Render part */
 		rk_video_ctx_use_color(engine->video, 1.0f, 1.0f, 1.0f, 1.0f);
 		rk_video_ctx_clear(engine->video);
-		
+	
+		rk_video_ctx_use_color(engine->video, 0.0f, 0.0f, 0.0f, 1.0f);
+		rk_map_render_2d(&engine->map, engine->video);
+	
 		/* 2D Map */
 		rk_video_ctx_use_color(engine->video, 1.0f, 0.0f, 0.0f, 1.0f);
 		rk_video_ctx_rectangle(engine->video, engine->camera->x,
@@ -170,6 +208,12 @@ void rk_engine_free(struct rk_engine_instance *engine)
 {
 	if (!engine) {
 		return;
+	}
+
+	if (engine->map.text_map) {
+		free(engine->map.text_map);
+		engine->map.text_map = NULL;
+		pr_info("Text map is free");
 	}
 
 	if (engine->camera) {
