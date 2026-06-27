@@ -1,7 +1,6 @@
-#include "rk/core.h"
-#include "rk/logger.h"
-#include "rk/video.h"
 #include "rk/input.h"
+#include "rk/video.h"
+#include "rk/logger.h"
 #include "rk/camera.h"
 
 #include <stdlib.h>
@@ -98,23 +97,23 @@ static void controller_update(struct rk_engine_instance *engine)
 
 	/* Move camera by HJKL */
 	if (rk_input_is_key_pressed(engine->input, SDL_SCANCODE_L)) {
-		dx = sinf(engine->camera->a) / 3.0f;
-		dy = cosf(engine->camera->a) / 3.0f;
+		dx = -sinf(engine->camera->a) / 5.0f;
+		dy = cosf(engine->camera->a) / 5.0f;
 	}
 
 	if (rk_input_is_key_pressed(engine->input, SDL_SCANCODE_K)) {
-		dx = cosf(engine->camera->a) / 3.0f;
-		dy = sinf(engine->camera->a) / 3.0f;
+		dx = cosf(engine->camera->a) / 5.0f;
+		dy = sinf(engine->camera->a) / 5.0f;
 	}
 
 	if (rk_input_is_key_pressed(engine->input, SDL_SCANCODE_J)) {
-		dx = -cosf(engine->camera->a) / 3.0f;
-		dy = -sinf(engine->camera->a) / 3.0f;
+		dx = -cosf(engine->camera->a) / 5.0f;
+		dy = -sinf(engine->camera->a) / 5.0f;
 	}
 
 	if (rk_input_is_key_pressed(engine->input, SDL_SCANCODE_H)) {
-		dx = sinf(engine->camera->a) / 3.0f;
-		dy = cosf(engine->camera->a) / 3.0f;
+		dx = sinf(engine->camera->a) / 5.0f;
+		dy = -cosf(engine->camera->a) / 5.0f;
 	}
 
 	rk_camera_move(engine->camera, dx, dy);
