@@ -2,25 +2,19 @@
 #include "rk/logger.h"
 #include "rk/video.h"
 #include "rk/input.h"
+#include "rk/camera.h"
 
 #include <stdlib.h>
 #include <stdbool.h>
 #include <math.h>
 
-/* TODO: Workaround*/
-#define CAMERA_SIZE 50
-#define CAMERA_SPEED 0.4f
-#define PI 3.14159265358979
+/* TODO: Workaround */
+#define CAMERA_SIZE 20
 
 struct rk_engine_instance {
 	struct rk_video_instance *video;
 	struct rk_input_instance *input;
-
-	float camera_x;
-	float camera_y;
-	float camera_a;
-	float camera_view_len;
-	float camera_fovy;
+	struct rk_camera *camera;
 
 	int window_width;
 	int window_height;
@@ -72,11 +66,22 @@ int rk_engine_init(struct rk_engine_instance *engine)
 
 	pr_info("Input module allocates: Sucess");
 
-	engine->camera_x = engine->window_width / 2 - CAMERA_SIZE / 2;
-	engine->camera_y = engine->window_height / 2 - CAMERA_SIZE / 2;
-	engine->camera_a = 0.0f;
-	engine->camera_view_len = 300.0f;
-	engine->camera_fovy = PI / 3;
+	engine->camera = rk_camera_alloc();
+	if (!engine->camera) {
+		ret = -4;
+		pr_err("Camera allocates: Failed");
+		goto failure;
+	}
+
+	pr_info("Camera allocates: Success");
+
+	/* Setup camera */
+	rk_camera_init(
+		engine->camera, engine->window_width / 2 - CAMERA_SIZE / 2,
+		engine->window_height / 2 - CAMERA_SIZE / 2, 0.0f, 0.3f);
+	
+	pr_info("Camera is setup");
+	
 	engine->is_running = true;
 
 	return true;
@@ -84,6 +89,27 @@ int rk_engine_init(struct rk_engine_instance *engine)
 failure:
 	/* main.c call rk_engine_free() */
 	return ret;
+}
+
+static void controller_update(struct rk_engine_instance *engine)
+{
+	/* Move camera by HJKL */
+	if (rk_input_is_key_pressed(engine->input, SDL_SCANCODE_L)) {
+		rk_camera_move(engine->camera, engine->camera->speed, 0.0f);
+	}
+
+	if (rk_input_is_key_pressed(engine->input, SDL_SCANCODE_H)) {
+		rk_camera_move(engine->camera, -engine->camera->speed, 0.0f);
+	}
+
+	if (rk_input_is_key_pressed(engine->input, SDL_SCANCODE_J)) {
+		rk_camera_move(engine->camera, 0.0f, engine->camera->speed);
+	}
+
+	if (rk_input_is_key_pressed(engine->input, SDL_SCANCODE_K)) {
+		rk_camera_move(engine->camera, 0.0f, -engine->camera->speed);
+	}
+
 }
 
 void rk_engine_run(struct rk_engine_instance *engine)
@@ -98,22 +124,7 @@ void rk_engine_run(struct rk_engine_instance *engine)
 			engine->is_running = false;
 		}
 
-		/* Camera movement */
-		if (rk_input_is_key_pressed(engine->input, SDL_SCANCODE_H)) {
-			engine->camera_x -= CAMERA_SPEED;
-		}
-
-		if (rk_input_is_key_pressed(engine->input, SDL_SCANCODE_L)) {
-			engine->camera_x += CAMERA_SPEED;
-		}
-
-		if (rk_input_is_key_pressed(engine->input, SDL_SCANCODE_J)) {
-			engine->camera_y += CAMERA_SPEED;
-		}
-
-		if (rk_input_is_key_pressed(engine->input, SDL_SCANCODE_K)) {
-			engine->camera_y -= CAMERA_SPEED;
-		}
+		controller_update(engine);
 
 		/* Render part */
 		rk_video_ctx_use_color(engine->video, 1.0f, 1.0f, 1.0f, 1.0f);
@@ -121,18 +132,18 @@ void rk_engine_run(struct rk_engine_instance *engine)
 		
 		/* 2D Map */
 		rk_video_ctx_use_color(engine->video, 1.0f, 0.0f, 0.0f, 1.0f);
-		rk_video_ctx_rectangle(engine->video, engine->camera_x,
-				       engine->camera_y, CAMERA_SIZE,
+		rk_video_ctx_rectangle(engine->video, engine->camera->x,
+				       engine->camera->y, CAMERA_SIZE,
 				       CAMERA_SIZE);
 	
-		float end_x = engine->camera_view_len * cosf(engine->camera_a)
-			      + engine->camera_x;
-		float end_y = engine->camera_view_len * sinf(engine->camera_a)
-			      + engine->camera_y;
+		float end_x =
+			500.0f * cosf(engine->camera->a) + engine->camera->x;
+		float end_y =
+			500.0f * sinf(engine->camera->a) + engine->camera->y;
 
 		rk_video_ctx_use_color(engine->video, 0.8f, 0.8f, 0.4f, 1.0f);
-		rk_video_ctx_line(engine->video, engine->camera_x + CAMERA_SIZE / 2,
-				  engine->camera_y + CAMERA_SIZE / 2, end_x +
+		rk_video_ctx_line(engine->video, engine->camera->x + CAMERA_SIZE / 2,
+				  engine->camera->y + CAMERA_SIZE / 2, end_x +
 				  CAMERA_SIZE / 2, end_y + CAMERA_SIZE / 2);
 	
 		rk_video_ctx_swap(engine->video);
@@ -143,6 +154,12 @@ void rk_engine_free(struct rk_engine_instance *engine)
 {
 	if (!engine) {
 		return;
+	}
+
+	if (engine->camera) {
+		rk_camera_free(engine->camera);
+		engine->camera = NULL;
+		pr_info("Camera is free");
 	}
 	
 	if (engine->input) {
@@ -160,8 +177,9 @@ void rk_engine_free(struct rk_engine_instance *engine)
 
 		pr_info("Video module free: Success");
 	}
-
+	
 	free(engine);
 
 	pr_info("All memory is free");
+
 }
