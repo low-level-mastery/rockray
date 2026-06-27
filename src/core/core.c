@@ -93,30 +93,31 @@ failure:
 
 static void controller_update(struct rk_engine_instance *engine)
 {
+	float dx = 0.0f;
+	float dy = 0.0f;
+
 	/* Move camera by HJKL */
 	if (rk_input_is_key_pressed(engine->input, SDL_SCANCODE_L)) {
-		float dx = -sinf(engine->camera->a) / 3.0f;
-		float dy = cosf(engine->camera->a) / 3.0f;
-		rk_camera_move(engine->camera, dx, dy);
+		dx = sinf(engine->camera->a) / 3.0f;
+		dy = cosf(engine->camera->a) / 3.0f;
 	}
 
 	if (rk_input_is_key_pressed(engine->input, SDL_SCANCODE_K)) {
-		float dx = cosf(engine->camera->a) / 3.0f;
-		float dy = sinf(engine->camera->a) / 3.0f;
-		rk_camera_move(engine->camera, dx, dy);
+		dx = cosf(engine->camera->a) / 3.0f;
+		dy = sinf(engine->camera->a) / 3.0f;
 	}
 
 	if (rk_input_is_key_pressed(engine->input, SDL_SCANCODE_J)) {
-		float dx = -cosf(engine->camera->a) / 3.0f;
-		float dy = -sinf(engine->camera->a) / 3.0f;
-		rk_camera_move(engine->camera, dx, dy);
+		dx = -cosf(engine->camera->a) / 3.0f;
+		dy = -sinf(engine->camera->a) / 3.0f;
 	}
 
 	if (rk_input_is_key_pressed(engine->input, SDL_SCANCODE_H)) {
-		float dx = sinf(engine->camera->a) / 3.0f;
-		float dy = -cosf(engine->camera->a) / 3.0f;
-		rk_camera_move(engine->camera, dx, dy);
+		dx = sinf(engine->camera->a) / 3.0f;
+		dy = cosf(engine->camera->a) / 3.0f;
 	}
+
+	rk_camera_move(engine->camera, dx, dy);
 
 	if (rk_input_is_key_pressed(engine->input, SDL_SCANCODE_E)) {
 		rk_camera_rotate(engine->camera, -0.001f);
